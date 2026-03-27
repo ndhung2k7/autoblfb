@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Comment Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-facebook"></i> Facebook Comment Assistant
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pages-tab" data-bs-toggle="tab" data-bs-target="#pages" type="button" role="tab">
+                    <i class="bi bi-file-earmark-text"></i> Pages
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab">
+                    <i class="bi bi-chat-dots"></i> Comments
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" type="button" role="tab">
+                    <i class="bi bi-file-text"></i> Reply Templates
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3">
+            <!-- Dashboard Tab -->
+            <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+                <div class="row" id="dashboardStats">
+                    <div class="col-md-3">
+                        <div class="card text-white bg-primary mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Pages</h5>
+                                <h2 id="totalPages">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-success mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Comments Today</h5>
+                                <h2 id="totalCommentsToday">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-info mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Replies Today</h5>
+                                <h2 id="totalRepliesToday">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-warning mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Reply Rate</h5>
+                                <h2 id="replyRate">0%</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="bi bi-bar-chart"></i> Recent Activity
+                    </div>
+                    <div class="card-body">
+                        <div id="recentActivity">
+                            <p class="text-muted">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pages Tab -->
+            <div class="tab-pane fade" id="pages" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPageModal">
+                            <i class="bi bi-plus-circle"></i> Add Facebook Page
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Page Name</th>
+                                        <th>Category</th>
+                                        <th>Auto Reply</th>
+                                        <th>Replies Today</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pagesList">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Tab -->
+            <div class="tab-pane fade" id="comments" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <select id="commentPageSelect" class="form-select w-auto d-inline-block">
+                            <option value="">Select a page</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div id="commentsList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Tab -->
+            <div class="tab-pane fade" id="templates" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <select id="templatePageSelect" class="form-select w-auto d-inline-block">
+                            <option value="">Select a page</option>
+                        </select>
+                        <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
+                            <i class="bi bi-plus-circle"></i> Add Template
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="templatesList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Page Modal -->
+    <div class="modal fade" id="addPageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Facebook Page</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPageForm">
+                        <div class="mb-3">
+                            <label class="form-label">Page ID</label>
+                            <input type="text" class="form-control" name="page_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Access Token</label>
+                            <textarea class="form-control" name="access_token" rows="3" required></textarea>
+                            <small class="text-muted">Get your token from Facebook Developer Console</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Page</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Template Modal -->
+    <div class="modal fade" id="addTemplateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Reply Template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTemplateForm">
+                        <div class="mb-3">
+                            <label class="form-label">Template Type</label>
+                            <select class="form-select" name="template_type" required>
+                                <option value="greeting">Greeting</option>
+                                <option value="price_inquiry">Price Inquiry</option>
+                                <option value="info_request">Info Request</option>
+                                <option value="complaint">Complaint</option>
+                                <option value="general">General</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            <textarea class="form-control" name="content" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Keywords (comma separated)</label>
+                            <input type="text" class="form-control" name="keywords" placeholder="price, cost, how much">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Template</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
